@@ -64,7 +64,9 @@ print(data)
 
 Please Note:
 
-VS Code alternative: open Command Palette → Python: Select Interpreter → choose the python interpreter, then click the green “Run Python File in Terminal” play button
+- VS Code alternative: open Command Palette → Python: Select Interpreter → choose the python interpreter, then click the green “Run Python File in Terminal” play button
+
+- Use `deactivate` to get out of `(venv)`
 
 <br>
 
