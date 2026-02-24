@@ -151,6 +151,85 @@ df.to_csv('last_100_pas.csv', index=False)
 
 ## Week 2: The 'AI Scout' Brain - API Setup (Gemini or OpenAI) and basic prompt testing
 
+In Week 2, we transition from collecting raw data to building the "Intelligence" of the app. This involves setting up your API access and, more importantly, **Prompt Engineering**—crafting the persona that turns numbers into a story.
+
+---
+
+## 🔑 1. Setup Your Gemini API Key
+
+For this project, I recommend using the **Gemini 3 Flash** model. It's incredibly fast, cost-effective (with a generous free tier), and specialized for tasks like summarizing data.
+
+1. **Get the Key:** Go to [Google AI Studio](https://aistudio.google.com/).
+2. **Create Key:** Click "Get API key" in the sidebar and create a key in a new project.
+3. **Secure It:** In your terminal, set it as an environment variable so you don't accidentally share it:
+
+- **Windows (PowerShell):** `$env:GEMINI_API_KEY="your_key_here"`
+- **Mac/Linux:** `export GEMINI_API_KEY="your_key_here"`
+
+---
+
+## 🧠 2. The "AI Scout" Script
+
+This script takes the DataFrame from Week 1, converts it to a readable string, and sends it to Gemini with a "System Instruction" that defines its personality.
+
+```python
+import os
+from google import genai
+from google.genai import types
+
+# 1. Initialize Client (Picks up key from environment variable)
+client = genai.Client()
+
+def generate_scouting_report(player_name, stats_df):
+    # Convert the last 100 PAs into a summary string for the AI
+    # We aggregate data to keep the prompt clean and concise
+    avg_ev = stats_df['launch_speed'].mean()
+    max_ev = stats_df['launch_speed'].max()
+    hard_hit_rate = (stats_df['launch_speed'] >= 95).mean() * 100
+
+    data_summary = f"""
+    Player: {player_name}
+    Last 100 PAs Summary:
+    - Average Exit Velocity: {avg_ev:.1f} mph
+    - Max Exit Velocity: {max_ev:.1f} mph
+    - Hard Hit %: {hard_hit_rate:.1f}%
+    - Recent Outcomes: {stats_df['events'].value_counts().to_dict()}
+    """
+
+    # 2. Define the Prompt (The "Brain")
+    system_prompt = "You are a professional MLB Scout. Use the provided Statcast data to write a concise, 3-paragraph report. Focus on power profile, recent plate discipline, and a 'prospect outlook'. Use scouting lingo (e.g., 'plus-power', 'noise in the delivery')."
+
+    # 3. Call Gemini
+    response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
+        contents=data_summary
+    )
+
+    return response.text
+
+# Test it with your DataFrame from Week 1
+# report = generate_scouting_report("Shohei Ohtani", df)
+# print(report)
+
+```
+
+---
+
+## 🧪 3. Basic Prompt Testing (What to tweak)
+
+To get the best reports, experiment with the `system_prompt`. Try adding these instructions to see how the tone changes:
+
+- **"The Skeptic":** "Identify one statistical red flag that might suggest a future decline in performance."
+- **"The Fantasy Guru":** "Analyze this specifically for a fantasy baseball owner. Should they Buy, Sell, or Hold?"
+- **"The Comp Specialist":** "Based on the exit velocity and launch angle profile, compare this player to a historical MLB great."
+
+### ✅ Success Metric for Week 2
+
+You have a script where you can input a player's name and, within 5 seconds, receive a 3-paragraph scouting report that sounds like it was written by a human scout.
+
+**Would you like me to show you how to structure the output as JSON so it's easier to display in your web app later?**
+
 ## Week 2: Prompt Engineering - Refine system message for MLB Sabermetrics expert analysis
 
 ## Week 2: Connect Python script to AI API to generate 3-paragraph report
