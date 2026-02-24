@@ -32,7 +32,7 @@ def get_last_100_pa(first_name, last_name):
     pa_data = pa_data.sort_values(by=['game_date', 'at_bat_number'], ascending=False)
 
     # 5. Extract the 100 most recent rows
-    last_100 = pa_data.head(100)
+    last_100 = pa_data.head(500)
 
     return last_100
 

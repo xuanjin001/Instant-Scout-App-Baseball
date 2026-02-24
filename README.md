@@ -232,6 +232,72 @@ You have a script where you can input a player's name and, within 5 seconds, rec
 
 ## Week 2: Prompt Engineering - Refine system message for MLB Sabermetrics expert analysis
 
+To move from a "basic chatbot" to a professional **MLB Sabermetrics Expert**, your prompt needs to do more than just summarize—it needs to interpret data through the lens of modern baseball theory.
+
+In 2026, scouts don't just look at "Home Runs"; they look at **Barrels**, **Whiff Rates**, and **Expected Run Values (xRA)**. Here is how to refine your system message to achieve that "Front Office" feel.
+
+---
+
+## 🛠️ The Refined "Expert" System Prompt
+
+Copy and paste this into your Week 2 script. This uses a "Chain of Thought" structure to force the AI to reason through the data before writing.
+
+```text
+You are a Senior MLB Sabermetrics Analyst for a Major League Front Office.
+Your goal is to provide a "Context-Inclusive" scouting report based on 100 Plate Appearances of Statcast data.
+
+### EVALUATION FRAMEWORK:
+1. Contact Quality: Prioritize "Barrels" and "Hard Hit %". If Hard Hit % > 45%, classify as "Elite Power Grade".
+2. Plate Discipline: Analyze the relationship between K% and Whiff%. Distinguish between "Aggressive-Productive" and "Chasing".
+3. Trend Analysis: Note if the player's recent Launch Angle (LA) suggests a "Launch Angle Revolution" adjustment or if they are "Topping" the ball (negative LA).
+
+### TONE & STYLE:
+- Use professional scouting lingo: "plus-plus raw power," "noise in the mechanics," "high-floor profile," "swing-and-miss profile."
+- Be objective and clinical. Avoid fluff.
+- Compare the current data to league averages (e.g., Average Exit Velo is ~89 mph).
+
+### OUTPUT STRUCTURE:
+- [HEADING]: Player Name & Primary Tool Grade (20-80 Scale).
+- [PARAGRAPH 1]: The Contact Profile (EV, LA, Barrels).
+- [PARAGRAPH 2]: Plate Discipline & Decision Making (K/BB, Whiff%).
+- [PARAGRAPH 3]: Front Office Recommendation (e.g., "Target in trade," "Adjust defensive positioning," "High-risk/High-reward").
+
+```
+
+---
+
+## 🔬 Advanced Prompting Techniques
+
+To take this to the next level, consider these three "Pro" adjustments:
+
+### 1. The "Few-Shot" Method
+
+LLMs learn best by example. Add a "Sample Report" to your prompt.
+
+> _“Here is an example of a high-quality report for Aaron Judge: [Paste a short, high-quality report here]. Now, perform a similar analysis for the following data...”_
+
+### 2. Guardrails Against "Hallucination"
+
+AI sometimes makes up stats if the data is missing. Add this line:
+
+> _“Strictly use the provided numbers. If a metric like 'Spin Rate' is not in the dataset, do not mention it. If the sample size is too small for a definitive conclusion, state 'Sample Size Warning'.”_
+
+### 3. "Self-Critique" Loop
+
+Ask the AI to review its own work before showing it to you.
+
+> _“After writing the report, review it for internal consistency. Does the 'Recommendation' match the 'Contact Profile'? Revise if necessary.”_
+
+---
+
+## 📊 Week 2 Success Checklist
+
+- [ ] **API Connectivity:** Your Python script successfully calls the Gemini/OpenAI API.
+- [ ] **Variable Injection:** The script dynamically inserts the player's name and stats into the prompt template.
+- [ ] **Output Quality:** The report uses terms like "Barrel Rate" and "Whiff%" correctly.
+
+**Would you like me to help you create a "Scouting Lingo Glossary" in Python to help the AI map raw numbers to "20-80 Scale" grades?**
+
 ## Week 2: Connect Python script to AI API to generate 3-paragraph report
 
 ## Week 3: Building the Interface (Frontend) - Build Streamlit layout with search bar and button
