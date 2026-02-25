@@ -292,13 +292,89 @@ Ask the AI to review its own work before showing it to you.
 
 ## 📊 Week 2 Success Checklist
 
-- [ ] **API Connectivity:** Your Python script successfully calls the Gemini/OpenAI API.
-- [ ] **Variable Injection:** The script dynamically inserts the player's name and stats into the prompt template.
-- [ ] **Output Quality:** The report uses terms like "Barrel Rate" and "Whiff%" correctly.
+- [x] **API Connectivity:** Your Python script successfully calls the Gemini/OpenAI API.
+- [x] **Variable Injection:** The script dynamically inserts the player's name and stats into the prompt template.
+- [x] **Output Quality:** The report uses terms like "Barrel Rate" and "Whiff%" correctly.
 
 **Would you like me to help you create a "Scouting Lingo Glossary" in Python to help the AI map raw numbers to "20-80 Scale" grades?**
 
 ## Week 2: Connect Python script to AI API to generate 3-paragraph report
+
+In Week 2, we bridge the gap between "raw data" and "human insight." This is where your Python script takes the data from Week 1, cleans it, and feeds it to the AI.
+
+---
+
+## 🛠️ Step 1: Secure Your API Key
+
+Before writing code, ensure your API key is stored safely. Never "hard-code" it directly into your script.
+
+1. Create a file named `.env` in your project folder.
+2. Add your key: `GEMINI_API_KEY=your_actual_key_here`
+3. Install the handler: `pip install python-dotenv google-genai`
+
+## 🧠 Step 2: The "Bridge" Script
+
+This script performs three jobs: it summarizes your DataFrame, sends it to the AI, and prints the 3-paragraph report.
+
+```python
+import os
+import pandas as pd
+from google import genai
+from dotenv import load_dotenv
+
+# Load variables from .env
+load_dotenv()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+def generate_report(player_name, df):
+    # 1. Summarize the data so the AI isn't overwhelmed
+    stats_summary = {
+        "avg_exit_velo": round(df['launch_speed'].mean(), 1),
+        "max_exit_velo": df['launch_speed'].max(),
+        "avg_launch_angle": round(df['launch_angle'].mean(), 1),
+        "outcomes": df['events'].value_counts().to_dict()
+    }
+
+    # 2. Construct the specific request
+    prompt = f"""
+    Analyze the following Statcast data for {player_name}:
+    {stats_summary}
+
+    Write a 3-paragraph professional scouting report:
+    - Para 1: Physical tools and contact quality.
+    - Para 2: Plate discipline and outcome trends.
+    - Para 3: Future outlook and 'pro comparison'.
+    """
+
+    # 3. Call the API
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
+
+    return response.text
+
+# --- TEST IT ---
+# df = pd.read_csv('last_100_pas.csv') # Use the data from Week 1
+# print(generate_report("Shohei Ohtani", df))
+
+```
+
+---
+
+## 🔬 Step 3: Prompt Refinement
+
+If the AI is being too "chatty" or getting stats wrong, use a **System Instruction**. This acts as a permanent personality for the AI that stays consistent across every report.
+
+- **The Goal:** Tell the AI _how_ to think before it sees the data.
+- **The Lingo:** Encourage it to use "scouting grades" (the 20-80 scale).
+
+> **Success Metric:** By the end of this week, you should be able to run one command and see a perfectly formatted, 3-paragraph scouting report for any player in your dataset.
+
+**Would you like me to help you format the AI's output into a clean JSON structure so it's ready for your website in Week 3?**
+
+[Connect Python to Gemini API](https://www.youtube.com/watch?v=cd_2NXuTGlQ)
+This video provides a clear walkthrough of setting up the Google GenAI library and making your first text generation request.
 
 ## Week 3: Building the Interface (Frontend) - Build Streamlit layout with search bar and button
 

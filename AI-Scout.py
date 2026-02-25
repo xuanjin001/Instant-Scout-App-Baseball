@@ -162,3 +162,7 @@ if __name__ == "__main__":
             print("\nCould not generate report - API quota exhausted.")
     else:
         print("Could not fetch player data.")
+
+
+# run it
+# ./setup.sh && python3 AI_Scout.py
