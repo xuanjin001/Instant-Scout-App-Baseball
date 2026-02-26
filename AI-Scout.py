@@ -5,6 +5,11 @@ import pybaseball as pb
 import pandas as pd
 from datetime import datetime, timedelta
 import time
+from dotenv import load_dotenv
+
+# Load variables from .env
+load_dotenv()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # 1. Initialize Client (Picks up key from environment variable)
 api_key = os.environ.get("GOOGLE_API_KEY")
@@ -148,10 +153,11 @@ A 50+ home run threat with a .300+ batting average, elite discipline, and elite 
 pb.cache.enable()
 if __name__ == "__main__":
     # df = get_last_100_pa("Tim", "Lincecum")
-    df = get_last_100_pa("Jung Hoo", "Lee")
+    # df = get_last_100_pa("Jung Hoo", "Lee")
+    df = get_last_100_pa("Nolan", "McLean")
     
     if df is not None:
-        report = generate_scouting_report("Jung Hoo Lee", df)
+        report = generate_scouting_report("Nolan McLean", df)
         
         if report:
             print("\n" + "="*60)
