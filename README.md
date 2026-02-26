@@ -378,6 +378,176 @@ This video provides a clear walkthrough of setting up the Google GenAI library a
 
 ## Week 3: Building the Interface (Frontend) - Build Streamlit layout with search bar and button
 
+In Week 3, we move from the terminal to the web browser. **Streamlit** is the industry standard for this because it allows you to build a professional-looking interface using only Python—no HTML or CSS required.
+
+---
+
+## 🛠️ The "Instant Scout" App Blueprint
+
+This script creates a "Wide Mode" layout with a search bar and three high-impact "KPI cards" (Key Performance Indicators) at the top.
+
+```python
+import streamlit as st
+import pandas as pd
+
+# 1. Page Configuration
+st.set_page_config(page_title="Instant Scout AI", layout="wide")
+
+st.title("⚾ Instant Scout: AI-Powered MLB Analysis")
+st.markdown("Enter a player's name to generate a professional Statcast scouting report.")
+
+# 2. Search Bar Layout
+# We use columns to put the search bar and button on the same line
+col1, col2 = st.columns([4, 1])
+
+with col1:
+    player_name = st.text_input("Player Name", placeholder="e.g., Shohei Ohtani", label_visibility="collapsed")
+
+with col2:
+    search_button = st.button("Generate Report", use_container_width=True)
+
+# 3. App Logic
+if search_button and player_name:
+    with st.spinner(f"Scouting {player_name}..."):
+        # This is where you would call your Week 1 & 2 functions
+        # df = get_last_100_pa(player_name)
+        # report = generate_report(player_name, df)
+
+        # Placeholder for visual feedback
+        st.divider()
+
+        # 4. Metrics Row (The "Quick Glance" stats)
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Avg Exit Velocity", "94.2 mph", delta="2.1 mph")
+        m2.metric("Hard Hit %", "52.4%", delta="-1.2%")
+        m3.metric("Barrel %", "15.8%", delta="3.4%")
+
+        # 5. The Main AI Report
+        st.subheader("📋 Scouting Analysis")
+        st.info("AI-Generated Report based on last 100 Plate Appearances")
+        st.write("*(Your AI scouting report from Week 2 will appear here...)*")
+
+```
+
+---
+
+## 🏗️ Key Streamlit Components Explained
+
+| Component    | Why we use it in a Baseball App                                                                           |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| `st.columns` | Keeps your layout from looking like a long, boring list. Good for comparing stats side-by-side.           |
+| `st.metric`  | Perfect for "Big Numbers" like Exit Velo or Home Runs. The `delta` parameter shows if they are improving. |
+| `st.spinner` | Essential for AI. It tells the user "The AI is thinking" so they don't think the app is frozen.           |
+| `st.divider` | Cleanly separates the search area from the results.                                                       |
+
+## 🚀 Pro-Tip: The "Sidebar" Option
+
+If you want to add filters (like "Season," "Home vs. Away," or "Pitch Type"), move the search bar to the sidebar using `with st.sidebar:`. This keeps the main screen dedicated solely to the scouting report and charts.
+
+### ✅ Success Metric for Week 3
+
+You can run `streamlit run app.py` in your terminal and see a website that actually reacts when you click the "Generate" button.
+
+**Would you like me to show you how to add a "Spray Chart" or "Radar Chart" using Plotly to make the report look even more professional?**
+
+[Build Interactive Data Apps with Streamlit](https://www.youtube.com/watch?v=JozICuAZMIw)
+This tutorial walks through the exact components used above, including layout mastery with columns and interactive widgets.
+
+Adding visualizations is the "secret sauce" that makes your app look like a professional scouting tool rather than a simple chatbot. We’ll use **Plotly**, which integrates natively with Streamlit to provide interactive, hoverable charts.
+
+---
+
+## 🛰️ 1. The Radar Chart (Percentile Rankings)
+
+A radar chart is the best way to show a player's "tools" at a glance. In this version, we’ll plot a player's stats against league averages (or your own custom grades).
+
+```python
+import plotly.graph_objects as go
+
+def create_radar_chart(stats_dict):
+    # Standard MLB tools on a 0-100 scale (percentiles)
+    categories = ['Exit Velo', 'Launch Angle', 'Hard Hit%', 'Barrel%', 'Zone Contact']
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatterpolar(
+        r=[stats_dict['ev'], stats_dict['la'], stats_dict['hh'], stats_dict['br'], stats_dict['zc']],
+        theta=categories,
+        fill='toself',
+        name='Player Profile',
+        line_color='#1f77b4'
+    ))
+
+    fig.update_layout(
+        polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
+        showlegend=False,
+        title="Player Tool Percentiles"
+    )
+    return fig
+
+# Display in Streamlit:
+# st.plotly_chart(create_radar_chart(my_stats), use_container_width=True)
+
+```
+
+---
+
+## ⚾ 2. The Spray Chart (Hit Locations)
+
+To build a spray chart, we have to convert Statcast's raw `hc_x` and `hc_y` pixels into a format that looks like a baseball field. We’ll also color-code the points by the "Event" (e.g., Home Run vs. Single).
+
+```python
+import plotly.express as px
+
+def create_spray_chart(df):
+    # Statcast coordinate transformation to center home plate
+    # Formula: x = (hc_x - 125.42), y = (198.27 - hc_y)
+    df['plot_x'] = df['hc_x'] - 125.42
+    df['plot_y'] = 198.27 - df['hc_y']
+
+    fig = px.scatter(
+        df, x='plot_x', y='plot_y',
+        color='events',
+        hover_data=['launch_speed', 'launch_angle', 'des'],
+        title="Recent Batted Ball Profile",
+        labels={'events': 'Outcome'}
+    )
+
+    # Make it look like a field: remove grid lines and fix axes
+    fig.update_layout(
+        xaxis=dict(visible=False, range=[-150, 150]),
+        yaxis=dict(visible=False, range=[0, 300]),
+        plot_bgcolor='rgba(0,0,0,0)', # Transparent background
+        height=500
+    )
+
+    # Optional: Add a 'Home Run' boundary line
+    fig.add_shape(type="path", path="M -100,100 Q 0,300 100,100", line_color="Gray")
+
+    return fig
+
+# Display in Streamlit:
+# st.plotly_chart(create_spray_chart(df), use_container_width=True)
+
+```
+
+---
+
+## 🚀 Pro-Tip: Integrating with AI
+
+In your **Week 2** prompt, you can now ask the AI to "Comment on the spray chart patterns." Since the AI has the raw `hc_x` and `hc_y` data, it can tell if a player is a "Dead-Pull Hitter" or an "All-Fields Threat" by looking at the distribution of those coordinates!
+
+### ✅ Week 3 Success Checklist
+
+- [ ] **Interactive Plots:** Users can hover over a dot on the spray chart to see the exact Exit Velocity.
+- [ ] **Responsive Design:** Use `st.columns([1, 1])` to show the Radar Chart and Spray Chart side-by-side.
+- [ ] **Visual Consistency:** Ensure your Plotly charts use the same color palette as your Streamlit theme.
+
+**Would you like me to help you write the code that "re-maps" the Statcast events into a custom color scale (e.g., making Home Runs bright red and Outs light gray)?**
+
+[Generating Plotly Charts in Streamlit](https://www.youtube.com/watch?v=KmcoofohV64)
+This video demonstrates how to take interactive Plotly visualizations and embed them seamlessly into a Streamlit dashboard.
+
 ## Week 3: Add visual elements (st.metric for stats, Plotly for spray charts)
 
 ## Week 4: Polishing & Deployment - Implement @st.cache_data for performance
