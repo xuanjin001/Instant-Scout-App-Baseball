@@ -564,5 +564,5 @@ This video demonstrates how to take interactive Plotly visualizations and embed 
 
 ## Errors and Fixes
 
-Please note, sometimes within python virtual environmen pip run sometimes is not recognized, in that case, please run the following:
-`python3 -m pip install -q -U google-genai`
+Please note, sometimes within python virtual environment pip run sometimes is not recognized, in that case, please run the following:
+`python3.13 -m pip install -q -U google-genai`

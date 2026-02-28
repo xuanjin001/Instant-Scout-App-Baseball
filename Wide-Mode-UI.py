@@ -9,6 +9,9 @@ from dotenv import load_dotenv
 from Last_100_PAs import get_last_100_pa
 from AI_Scout import generate_scouting_report
 
+# import plotly.graph_objects as go
+from plot_graph import create_radar_chart
+
 # Load variables from .env
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -31,9 +34,6 @@ with col1:
 with col2:
     search_button = st.button("Generate Report", use_container_width=True)
 
-# get the functions
-# Call the function directly
-last_100_pa = get_last_100_pa("Shohei", "Ohtani")
 
 # 3. App Logic
 if search_button and player_name:
@@ -77,12 +77,24 @@ if search_button and player_name:
         # 5. The Main AI Report
         st.subheader("📋 Scouting Analysis")
         st.info("AI-Generated Report based on last 100 Plate Appearances")
-        st.write("*(Your AI scouting report from Week 2 will appear here...)*")
+        # st.write("*(Your AI scouting report from Week 2 will appear here...)*")
 
         
 
         if df is not None:
+                # Create stats dict for radar chart
+                # Handle cases where specific columns might be missing
+                barrel_rate = df['barrel'].mean() * 100 if 'barrel' in df.columns else 0
+                
+                my_stats = {
+                    'ev': df['launch_speed'].mean(),
+                    'la': df['launch_angle'].mean(),
+                    'hh': (df['launch_speed'] >= 95).mean() * 100,
+                    'br': barrel_rate,
+                    'zc': df['zone_contact'].mean() if 'zone_contact' in df.columns else 50
+                }
                 report = generate_scouting_report(player_name, df)
+                st.plotly_chart(create_radar_chart(my_stats), use_container_width=True)
                 
                 if report:
                     print("\n" + "="*60)
