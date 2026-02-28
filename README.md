@@ -457,6 +457,8 @@ Adding visualizations is the "secret sauce" that makes your app look like a prof
 
 ---
 
+-- stopped here, need to do the following still
+
 ## 🛰️ 1. The Radar Chart (Percentile Rankings)
 
 A radar chart is the best way to show a player's "tools" at a glance. In this version, we’ll plot a player's stats against league averages (or your own custom grades).
