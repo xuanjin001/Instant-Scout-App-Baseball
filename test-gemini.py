@@ -1,3 +1,10 @@
+try:
+    from dotenv import load_dotenv
+    print("python-dotenv is installed successfully!")
+except ImportError:
+    print("python-dotenv is not installed.")
+
+
 from google import genai
 
 # The client gets the API key from the environment variable `GEMINI_API_KEY`.

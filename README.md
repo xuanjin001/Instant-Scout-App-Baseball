@@ -559,3 +559,8 @@ This video demonstrates how to take interactive Plotly visualizations and embed 
 **Next Step:** Run that script by typing `python test_data.py` in your terminal. If you see Aaron Judge's MLB ID, you're ready for Phase 1!
 
 **Would you like me to show you how to pull the specific "Statcast" metrics (Exit Velocity, etc.) for your first report?**
+
+## Errors and Fixes
+
+Please note, sometimes within python virtual environmen pip run sometimes is not recognized, in that case, please run the following:
+`python3 -m pip install -q -U google-genai`
