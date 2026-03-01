@@ -1,8 +1,10 @@
 
+import streamlit as st
 import pybaseball as pb
 import pandas as pd
 from datetime import datetime, timedelta
 
+@st.cache_data(ttl=86400)
 def get_last_100_pa(first_name, last_name):
     # 1. Lookup the player's unique MLB ID
     print(f"Searching for {first_name} {last_name}...")

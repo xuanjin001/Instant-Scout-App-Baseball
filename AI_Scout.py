@@ -1,4 +1,5 @@
 import os
+import streamlit as st
 from google import genai
 # import google.generativeai as genai  # ✅ Correct
 from google.genai import types
@@ -21,6 +22,7 @@ if not api_key:
     )
 client = genai.Client(api_key=api_key)
 
+@st.cache_data(ttl=86400)
 def get_last_100_pa(first_name, last_name):
     """Fetch the last 100 plate appearances for a player"""
     print(f"Searching for {first_name} {last_name}...")
@@ -45,6 +47,7 @@ def get_last_100_pa(first_name, last_name):
 
     return last_100
 
+@st.cache_data(ttl=3600)
 def generate_scouting_report(player_name, stats_df):
     # Convert the last 100 PAs into a summary string for the AI
     # We aggregate data to keep the prompt clean and concise

@@ -1,0 +1,6 @@
+streamlit
+pybaseball
+pandas
+google-genai
+python-dotenv
+plotly

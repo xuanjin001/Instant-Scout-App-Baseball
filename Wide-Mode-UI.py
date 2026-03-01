@@ -93,6 +93,7 @@ if search_button and player_name:
                     'br': barrel_rate,
                     'zc': df['zone_contact'].mean() if 'zone_contact' in df.columns else 50
                 }
+                
                 report = generate_scouting_report(player_name, df)
                 st.plotly_chart(create_radar_chart(my_stats), use_container_width=True)
                 

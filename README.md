@@ -552,7 +552,93 @@ This video demonstrates how to take interactive Plotly visualizations and embed 
 
 ## Week 3: Add visual elements (st.metric for stats, Plotly for spray charts)
 
+- covered on the above
+
 ## Week 4: Polishing & Deployment - Implement @st.cache_data for performance
+
+In the final week, we turn your project from a local script into a high-performance, professional web application. This involves **caching** to make the app lightning-fast and **deploying** it so you can share a live link with anyone.
+
+---
+
+## ⚡ 1. The Power of `@st.cache_data`
+
+Every time a user clicks a button in Streamlit, the _entire script_ reruns. Without caching, your app would re-download MLB data and re-call the expensive AI API every single time, leading to 10-second wait times.
+
+### How to Implement It
+
+Wrap your "heavy lifting" functions with the `@st.cache_data` decorator. Use the `ttl` (Time-To-Live) parameter to ensure the data eventually refreshes (e.g., once per day).
+
+```python
+import streamlit as st
+import pybaseball as pb
+
+# Cache the player data for 24 hours (86400 seconds)
+@st.cache_data(ttl=86400)
+def fetch_player_stats(first_name, last_name):
+    # This only runs ONCE per player per day
+    lookup = pb.playerid_lookup(last_name, first_name)
+    # ... (Your Week 1 fetching logic)
+    return df
+
+@st.cache_data(ttl=3600) # Cache AI reports for 1 hour
+def get_ai_scout_report(player_name, data_summary):
+    # This prevents duplicate API charges for the same player
+    # ... (Your Week 2 AI logic)
+    return report
+
+```
+
+---
+
+## 🚀 2. Deploying to the World
+
+We will use **Streamlit Community Cloud**—it’s free and connects directly to your GitHub.
+
+### Step-by-Step Deployment:
+
+1. **Prepare your `requirements.txt`:** Create a file named `requirements.txt` in your project folder so the cloud knows what to install:
+
+```text
+streamlit
+pybaseball
+pandas
+google-genai
+python-dotenv
+plotly
+
+```
+
+2. **Push to GitHub:** Upload your code to a public or private GitHub repository.
+3. **Connect to Streamlit:** \* Go to [share.streamlit.io](https://share.streamlit.io).
+
+- Click **"Create App"** and select your GitHub repo.
+- **Crucial Step:** Under "Advanced Settings," paste your `GEMINI_API_KEY=your_key` into the **Secrets** box. This allows the cloud to use your AI safely.
+
+---
+
+## 🎨 3. The "Polish" Checklist
+
+Before you send the link to a recruiter or friend, do these three things:
+
+- **Add a Logo:** Use `st.logo("path/to/logo.png")` or a simple `st.sidebar.title("⚾ Instant Scout")`.
+- **Empty States:** Ensure the app looks good _before_ a search. Use `st.info("Search for a player to begin.")`.
+- **Error Handling:** Use a `try/except` block around your `pybaseball` call. If a player name is misspelled, show a friendly message: `st.error("Player not found. Check the spelling!")`.
+
+---
+
+### ✅ Project Complete!
+
+You now have a fully functional AI-driven sports analytics tool. You’ve mastered:
+
+1. **Data Engineering** (pybaseball & Pandas)
+2. **AI Orchestration** (Gemini API & Prompt Engineering)
+3. **Frontend Development** (Streamlit & Plotly)
+4. **DevOps** (Caching & Cloud Deployment)
+
+[Deploying Streamlit Apps to the Cloud](https://www.youtube.com/watch?v=LkK1RwOm0_c)
+This video explains the technical nuances of how `@st.cache_data` stores information and demonstrates the deployment process to ensure your app stays fast and accessible.
+
+**Would you like me to help you write a "Technical Summary" for your resume or LinkedIn to describe this project?**
 
 ## Week 4: Deploy to Streamlit Community Cloud
 
