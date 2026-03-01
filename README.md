@@ -609,7 +609,7 @@ plotly
 ```
 
 2. **Push to GitHub:** Upload your code to a public or private GitHub repository.
-3. **Connect to Streamlit:** \* Go to [share.streamlit.io](https://share.streamlit.io).
+3. **Connect to Streamlit:** Go to [share.streamlit.io](https://share.streamlit.io).
 
 - Click **"Create App"** and select your GitHub repo.
 - **Crucial Step:** Under "Advanced Settings," paste your `GEMINI_API_KEY=your_key` into the **Secrets** box. This allows the cloud to use your AI safely.
