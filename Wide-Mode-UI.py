@@ -12,13 +12,47 @@ from AI_Scout import generate_scouting_report
 # import plotly.graph_objects as go
 from plot_graph import create_radar_chart
 
+
+
+
 # Load variables from .env
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 # 1. Page Configuration
-st.set_page_config(page_title="Instant Scout AI", layout="wide")
+
+st.sidebar.title("⚾ Instant Scout")
+st.sidebar.info(
+    """
+    Hello! Welcome to Instant Scout. \n
+    This is a place to pull up player information, and imagine you are a professional MLB scout writing a report on that player.  \n
+    Here is a sample scouting report for you as a Scout. \n
+    Are you ready to scout like a pro?  \n
+    Let's get started! Search for a player to begin.  \n
+
+    """
+)
+
+# display logo in sidebar; use image if logo API isn't available
+try:
+    st.logo("./baseball-logo.png")
+except Exception:
+    st.sidebar.image("./baseball-logo.png", use_column_width=True)
+
+# instructional message with explicit newline
+st.info(
+    """Search for a player to begin.  \n
+Not all pitcher data is currently available, but will be added in a future update!
+For now, try searching for a hitter like 'Shohei Ohtani' or 'Mookie Betts'."""
+)
+
+
+# st.info("Not all pitcher data is currently available, but will be added in a future update! For now, try searching for a hitter like 'Shohei Ohtani' or 'Mookie Betts'.")
+
+
+st.set_page_config(page_title="Instant Scout AI", layout="wide",page_icon="⚾️")
+
 
 st.title("⚾ Instant Scout: AI-Powered MLB Analysis")
 st.markdown("Enter a player's name to generate a professional Statcast scouting report.")
@@ -29,7 +63,7 @@ col1, col2 = st.columns([4, 1])
 
 with col1:
     # player_name = st.text_input("Player Name", placeholder="e.g., Shohei Ohtani", label_visibility="collapsed")
-    player_name = st.text_input("Player Name", placeholder="e.g., Shohei Ohtani", label_visibility="collapsed")
+    player_name = st.text_input("Player Name", placeholder="Search for a player to begin...", label_visibility="collapsed")
 
 with col2:
     search_button = st.button("Generate Report", use_container_width=True)
@@ -55,7 +89,14 @@ if search_button and player_name:
     
     with st.spinner(f"Scouting {player_name}..."):
         # This is where you would call your Week 1 & 2 functions
-        df = get_last_100_pa(first_name, last_name)
+        try:
+            df = get_last_100_pa(first_name, last_name)
+        except Exception as e:
+            st.error("Player not found. Check the spelling!")
+            df = None
+
+        if df is None:
+            st.error("No data found for this player. Please try another name.")
         # report = generate_report(player_name, df)
 
         # Placeholder for visual feedback
@@ -63,14 +104,14 @@ if search_button and player_name:
 
         # 4. Metrics Row (The "Quick Glance" stats)
         m1, m2, m3 = st.columns(3)
-        # m1.metric("Avg Exit Velocity", "94.2 mph", delta="2.1 mph")
-        # m2.metric("Hard Hit %", "52.4%", delta="-1.2%")
-        # m3.metric("Barrel %", "15.8%", delta="3.4%")
-
-        # "avg_exit_velo": round(df['launch_speed'].mean(), 1),
-        m1.metric("Avg Exit Velocity", f"{df['launch_speed'].mean():.1f} mph")
-        m2.metric("Max Exit Velocity", f"{df['launch_speed'].max():.1f} mph")
-        m3.metric("Avg Launch Angle", f"{df['launch_angle'].mean():.1f}°")
+        if df is not None and not df.empty:
+            m1.metric("Avg Exit Velocity", f"{df['launch_speed'].mean():.1f} mph")
+            m2.metric("Max Exit Velocity", f"{df['launch_speed'].max():.1f} mph")
+            m3.metric("Avg Launch Angle", f"{df['launch_angle'].mean():.1f}°")
+        else:
+            m1.metric("Avg Exit Velocity", "N/A")
+            m2.metric("Max Exit Velocity", "N/A")
+            m3.metric("Avg Launch Angle", "N/A")
 
 
 

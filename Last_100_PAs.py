@@ -41,13 +41,14 @@ def get_last_100_pa(first_name, last_name):
 # --- EXECUTION ---
 pb.cache.enable()
 # df = get_last_100_pa("Tim", "Lincecum")
-df = get_last_100_pa("Jung Hoo", "Lee")
 
-if df is not None:
-    print(f"Successfully retrieved {len(df)} Plate Appearances.")
-    # Show the most relevant columns for your AI Scout
-    print(df[['game_date', 'events', 'launch_speed', 'launch_angle']].head(10))
-    df.to_csv('last_100_pas.csv', index=False)
-    print("Saved to last_100_pas.csv")
-else:
-    print("Error: Could not fetch player data. Check the player name or internet connection.")
+# df = get_last_100_pa("Jung Hoo", "Lee")
+
+# if df is not None:
+#     print(f"Successfully retrieved {len(df)} Plate Appearances.")
+#     # Show the most relevant columns for your AI Scout
+#     print(df[['game_date', 'events', 'launch_speed', 'launch_angle']].head(10))
+#     df.to_csv('last_100_pas.csv', index=False)
+#     print("Saved to last_100_pas.csv")
+# else:
+#     print("Error: Could not fetch player data. Check the player name or internet connection.")

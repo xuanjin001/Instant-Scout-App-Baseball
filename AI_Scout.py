@@ -154,24 +154,24 @@ A 50+ home run threat with a .300+ batting average, elite discipline, and elite 
                 raise
 
 # Test it with your DataFrame from Week 1
-pb.cache.enable()
-if __name__ == "__main__":
-    # df = get_last_100_pa("Tim", "Lincecum")
-    # df = get_last_100_pa("Jung Hoo", "Lee")
-    df = get_last_100_pa("Nolan", "McLean")
+# pb.cache.enable()
+# if __name__ == "__main__":
+#     # df = get_last_100_pa("Tim", "Lincecum")
+#     # df = get_last_100_pa("Jung Hoo", "Lee")
+#     df = get_last_100_pa("Nolan", "McLean")
     
-    if df is not None:
-        report = generate_scouting_report("Nolan McLean", df)
+#     if df is not None:
+#         report = generate_scouting_report("Nolan McLean", df)
         
-        if report:
-            print("\n" + "="*60)
-            print("SCOUTING REPORT")
-            print("="*60)
-            print(report)
-        else:
-            print("\nCould not generate report - API quota exhausted.")
-    else:
-        print("Could not fetch player data.")
+#         if report:
+#             print("\n" + "="*60)
+#             print("SCOUTING REPORT")
+#             print("="*60)
+#             print(report)
+#         else:
+#             print("\nCould not generate report - API quota exhausted.")
+#     else:
+#         print("Could not fetch player data.")
 
 
 # run it

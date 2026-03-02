@@ -114,3 +114,6 @@ last_100_pas.csv
 
 # reports cache
 reports_cache.json
+
+# sh file
+*.sh
